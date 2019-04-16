@@ -1,5 +1,3 @@
-## 1 - Setup
+## node-express-typescript-recipes
 
-This is the very basic setup. Run `nvm use` to select the required Node version. Do `npm install` to install dependencies and start the simple application using `npm start`.
-Nothing more yet. Please continue in order to see how to build up.
-
+Have a look at the [docs](./docs/) which state of the application is available on this branch.
