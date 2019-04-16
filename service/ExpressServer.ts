@@ -1,6 +1,12 @@
 import * as express from 'express'
 import { Express } from 'express'
 import { Server } from 'http'
+import * as compress from 'compression'
+import * as bodyParser from 'body-parser'
+import * as cookieParser from 'cookie-parser'
+
+import { noCache } from './NoCacheMiddleware'
+import { CatEndpoints } from './cats/CatEndpoints'
 
 /**
  * Abstraction around the raw Express.js server and Nodes' HTTP server.
@@ -11,8 +17,14 @@ export class ExpressServer {
     private server?: Express
     private httpServer?: Server
 
+    constructor(private catEndpoints: CatEndpoints) {
+    }
+
     public async setup(port: number) {
         const server = express()
+        this.setupStandardMiddlewares(server)
+        this.configureApiEndpoints(server)
+
         this.httpServer = this.listen(server, port)
         this.server = server
         return this.server
@@ -24,5 +36,15 @@ export class ExpressServer {
 
     public kill() {
         if (this.httpServer) this.httpServer.close()
+    }
+
+    private setupStandardMiddlewares(server: Express) {
+        server.use(bodyParser.json())
+        server.use(cookieParser())
+        server.use(compress())
+    }
+
+    private configureApiEndpoints(server: Express) {
+        server.get('/api/cat/:catId', noCache, this.catEndpoints.getCatDetails)
     }
 }
