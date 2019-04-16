@@ -2,13 +2,13 @@
   "name": "node-express-typescript-recipes",
   "version": "0.0.1",
   "description": "A cookbook full of recipes for developing web apps with Node.js and Express.js in TypeScript",
-  "main": "index.ts",
+  "main": "service/index.ts",
   "engines": {
     "node": ">=8.15.0",
     "npm": ">=6.4.1"
   },
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "ts-node service/index.ts"
   },
   "dependencies": {
     "express": "^4.16.2"
