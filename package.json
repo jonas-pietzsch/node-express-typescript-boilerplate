@@ -1,0 +1,27 @@
+{
+  "name": "node-express-typescript-recipes",
+  "version": "0.0.1",
+  "description": "A cookbook full of recipes for developing web apps with Node.js and Express.js in TypeScript",
+  "main": "index.ts",
+  "engines": {
+    "node": ">=8.15.0",
+    "npm": ">=6.4.1"
+  },
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "@types/express": "4.11.1",
+    "typescript": "3.1.1",
+    "ts-node": "6.1.1"
+  },
+  "author": "Jonas Verhoelen <jonas.verhoelen@codecentric.de>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jverhoelen/node-express-typescript-recipes.git"
+  },
+  "license": "MIT"
+}
