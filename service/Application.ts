@@ -1,5 +1,9 @@
 import { ExpressServer } from './ExpressServer'
 
+/**
+ * Wrapper around the Node process, ExpressServer abstraction and complex dependencies such as services that ExpressServer needs.
+ * When not using Dependency Injection, can be used as place for wiring together services which are dependencies of ExpressServer.
+ */
 export class Application {
     public static async createApplication() {
         const expressServer = new ExpressServer()

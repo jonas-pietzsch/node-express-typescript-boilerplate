@@ -1,7 +1,12 @@
 import * as express from 'express'
-import { Express} from 'express'
+import { Express } from 'express'
 import { Server } from 'http'
 
+/**
+ * Abstraction around the raw Express.js server and Nodes' HTTP server.
+ * Defines HTTP request mappings, basic as well as request-mapping-specific
+ * middleware chains for application logic, config and everything else.
+ */
 export class ExpressServer {
     private server?: Express
     private httpServer?: Server
@@ -13,7 +18,7 @@ export class ExpressServer {
         return this.server
     }
 
-    public  listen(server: Express, port: number) {
+    public listen(server: Express, port: number) {
         return server.listen(port)
     }
 
