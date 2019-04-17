@@ -8,6 +8,8 @@ import * as cookieParser from 'cookie-parser'
 import { noCache } from './middlewares/NoCacheMiddleware'
 import DatadogStatsdMiddleware from './middlewares/DatadogStatsdMiddleware'
 import { CatEndpoints } from './cats/CatEndpoints'
+import { RequestServices } from './types/CustomRequest'
+import { addServicesToRequest } from './middlewares/ServiceDependenciesMiddleware'
 
 /**
  * Abstraction around the raw Express.js server and Nodes' HTTP server.
@@ -18,12 +20,13 @@ export class ExpressServer {
     private server?: Express
     private httpServer?: Server
 
-    constructor(private catEndpoints: CatEndpoints) {}
+    constructor(private catEndpoints: CatEndpoints, private requestServices: RequestServices) {}
 
     public async setup(port: number) {
         const server = express()
         this.setupStandardMiddlewares(server)
         this.setupTelemetry(server)
+        this.setupServiceDependencies(server)
         this.configureApiEndpoints(server)
 
         this.httpServer = this.listen(server, port)
@@ -53,7 +56,14 @@ export class ExpressServer {
         })
     }
 
+    private setupServiceDependencies(server: Express) {
+        const servicesMiddleware = addServicesToRequest(this.requestServices)
+        server.use(servicesMiddleware)
+    }
+
     private configureApiEndpoints(server: Express) {
+        server.get('/api/cat', noCache, this.catEndpoints.getAllCats)
+        server.get('/api/statistics/cat', noCache, this.catEndpoints.getCatStatistics)
         server.get('/api/cat/:catId', noCache, this.catEndpoints.getCatDetails)
     }
 }
