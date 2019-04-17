@@ -5,7 +5,8 @@ import * as compress from 'compression'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 
-import { noCache } from './NoCacheMiddleware'
+import { noCache } from './middlewares/NoCacheMiddleware'
+import DatadogStatsdMiddleware from './middlewares/DatadogStatsdMiddleware'
 import { CatEndpoints } from './cats/CatEndpoints'
 
 /**
@@ -17,12 +18,12 @@ export class ExpressServer {
     private server?: Express
     private httpServer?: Server
 
-    constructor(private catEndpoints: CatEndpoints) {
-    }
+    constructor(private catEndpoints: CatEndpoints) {}
 
     public async setup(port: number) {
         const server = express()
         this.setupStandardMiddlewares(server)
+        this.setupTelemetry(server)
         this.configureApiEndpoints(server)
 
         this.httpServer = this.listen(server, port)
@@ -42,6 +43,14 @@ export class ExpressServer {
         server.use(bodyParser.json())
         server.use(cookieParser())
         server.use(compress())
+    }
+
+    private setupTelemetry(server: Express) {
+        DatadogStatsdMiddleware.applyTo(server, {
+            targetHost: 'https://datadog.mycompany.com',
+            enableTelemetry: false,
+            tags: ['team:cats', 'product:cats-provider']
+        })
     }
 
     private configureApiEndpoints(server: Express) {
