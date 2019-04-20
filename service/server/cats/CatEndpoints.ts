@@ -27,7 +27,7 @@ export class CatEndpoints {
         }
     }
 
-    public getCatStatistics = async (req: Request, res: Response, next: NextFunction) => {
+    public getCatsStatistics = async (req: Request, res: Response, next: NextFunction) => {
         try {
             res.json(req.services.catService.getCatsStatistics())
         } catch (err) {

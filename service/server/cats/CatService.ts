@@ -19,7 +19,7 @@ export class CatService {
 
         return {
             amount: allCats.length,
-            averageAge: catsAgeSum / allCats.length
+            averageAge: allCats.length ? catsAgeSum / allCats.length : 0
         }
     }
 }
