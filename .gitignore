@@ -1,5 +1,6 @@
 node_modules
 lib
+service/www/static/
 coverage
 .nyc_output
 .vscode
