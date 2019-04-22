@@ -1,0 +1,9 @@
+{
+  "marked": {},
+  "chunks": {
+    "app": [
+      "static/app-bundle.js",
+      "static/app-bundle.js.map"
+    ]
+  }
+}
