@@ -8,7 +8,8 @@
     "npm": ">=6.4.1"
   },
   "scripts": {
-    "start": "ts-node service/server/index.ts",
+    "start": "nodemon --watch service -e ts,tsx --ignore 'src/frontend' --ignore '*Spec.ts*' --ignore '*Test.ts*' --exec 'yarn run server'",
+    "server": "ts-node service/server/index.ts",
     "prettier:check": "prettier --check service/**/*.{ts,tsx,js,jsx}",
     "prettier:write": "prettier --write service/**/*.{ts,tsx,js,jsx}",
     "test": "npm run prettier:check && npm run test:unit && npm audit",
@@ -24,12 +25,14 @@
     "cookie-parser": "1.4.3",
     "http-status-codes": "1.3.0",
     "connect-datadog": "^0.0.6",
-    "hot-shots": "^4.7.0"
+    "hot-shots": "^4.7.0",
+    "fs-extra": "7.0.1"
   },
   "devDependencies": {
     "@types/chai": "4.1.7",
     "@types/chai-as-promised": "7.1.0",
     "@types/chai-string": "1.4.1",
+    "@types/fs-extra": "5.0.0",
     "@types/chai-subset": "1.3.1",
     "@types/compression": "0.0.35",
     "@types/cookie-parser": "1.4.1",
@@ -46,6 +49,7 @@
     "chai-string": "1.5.0",
     "chai-subset": "1.6.0",
     "expressmocks": "^0.1.3",
+    "nodemon": "^1.19.0",
     "mocha": "5.2.0",
     "isomorphic-loader": "^2.0.2",
     "mocha-better-spec-reporter": "3.1.0",

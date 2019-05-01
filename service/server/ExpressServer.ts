@@ -1,6 +1,7 @@
 import * as express from 'express'
-import { Express } from 'express'
+import { Express, NextFunction, Response, Request } from 'express'
 import { Server } from 'http'
+import * as fse from 'fs-extra'
 import * as compress from 'compression'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
@@ -10,6 +11,7 @@ import DatadogStatsdMiddleware from './middlewares/DatadogStatsdMiddleware'
 import { CatEndpoints } from './cats/CatEndpoints'
 import { RequestServices } from './types/CustomRequest'
 import { addServicesToRequest } from './middlewares/ServiceDependenciesMiddleware'
+import { Environment } from './Environment'
 
 /**
  * Abstraction around the raw Express.js server and Nodes' HTTP server.
@@ -18,6 +20,7 @@ import { addServicesToRequest } from './middlewares/ServiceDependenciesMiddlewar
  */
 export class ExpressServer {
     private server?: Express
+    private cssFiles?: string[]
     private httpServer?: Server
 
     constructor(private catEndpoints: CatEndpoints, private requestServices: RequestServices) {}
@@ -25,8 +28,11 @@ export class ExpressServer {
     public async setup(port: number) {
         const server = express()
         this.setupStandardMiddlewares(server)
+        this.applyWebpackDevMiddleware(server)
         this.setupTelemetry(server)
         this.setupServiceDependencies(server)
+        this.configureEjsTemplates(server)
+        this.configureFrontendPages(server)
         this.configureApiEndpoints(server)
 
         this.httpServer = this.listen(server, port)
@@ -48,6 +54,11 @@ export class ExpressServer {
         server.use(compress())
     }
 
+    private configureEjsTemplates(server: Express) {
+        server.set('views', [ 'resources/views' ])
+        server.set('view engine', 'ejs')
+    }
+
     private setupTelemetry(server: Express) {
         DatadogStatsdMiddleware.applyTo(server, {
             targetHost: 'https://datadog.mycompany.com',
@@ -59,6 +70,57 @@ export class ExpressServer {
     private setupServiceDependencies(server: Express) {
         const servicesMiddleware = addServicesToRequest(this.requestServices)
         server.use(servicesMiddleware)
+    }
+
+    private configureFrontendPages(server: Express) {
+        this.prepareAssets()
+        this.configureStaticAssets(server)
+
+        const renderPage = (template: string) => async (req: Request, res: Response, next: NextFunction) => {
+            res.type('text/html').render(template, { cssFiles: this.cssFiles })
+        }
+
+        server.get('/', noCache, renderPage('index'))
+    }
+
+    private configureStaticAssets(server: Express) {
+        if (Environment.isProd()) {
+            server.use([/(.*)\.js\.map$/, '/'], express.static('www/'))
+        } else {
+            server.use('/', express.static('www/'))
+        }
+
+        server.use('/', express.static('resources/img/'))
+    }
+
+    private applyWebpackDevMiddleware(server: Express) {
+        if (Environment.isLocal()) {
+            const webpack = require('webpack')
+            const config = require('../../webpack.config.js')
+            const compiler = webpack(config)
+
+            const webpackDevMiddleware = require('webpack-dev-middleware')
+            server.use(webpackDevMiddleware(compiler, {
+                hot: true,
+                publicPath: config.output.publicPath,
+                compress: true,
+                host: 'localhost',
+                port: Environment.getPort()
+            }))
+
+            const webpackHotMiddleware = require('webpack-hot-middleware')
+            server.use(webpackHotMiddleware(compiler))
+        }
+    }
+
+    private async prepareAssets() {
+        if (Environment.isLocal()) {
+            this.cssFiles = []
+        } else {
+            const isomorphicAssets: any = JSON.parse(await fse.readFile('www/static/media/isomorphic-assets.json', 'utf-8'))
+            this.cssFiles = isomorphicAssets.chunks.app
+                .filter((path: string) => path.endsWith('.css'))
+        }
     }
 
     private configureApiEndpoints(server: Express) {
