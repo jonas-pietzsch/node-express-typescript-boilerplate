@@ -63,7 +63,7 @@ export class ExpressServer {
 
     private configureApiEndpoints(server: Express) {
         server.get('/api/cat', noCache, this.catEndpoints.getAllCats)
-        server.get('/api/statistics/cat', noCache, this.catEndpoints.getCatStatistics)
+        server.get('/api/statistics/cat', noCache, this.catEndpoints.getCatsStatistics)
         server.get('/api/cat/:catId', noCache, this.catEndpoints.getCatDetails)
     }
 }

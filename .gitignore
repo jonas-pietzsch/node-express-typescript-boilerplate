@@ -4,3 +4,4 @@ service/www/static/
 coverage
 .nyc_output
 .vscode
+.isomorphic-loader-config.json

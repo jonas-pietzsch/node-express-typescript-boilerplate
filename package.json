@@ -14,6 +14,7 @@
     "test": "npm run prettier:check && npm run test:unit && npm audit",
     "test:unit": "_mocha 'service/**/*Spec.ts' --opts service/mocha.opts",
     "copy-service-assets": "cd service && find . -name '*.json' | cpio -pdm ../lib",
+    "build": "npm run build:server && npm run build:client",
     "build:server": "npm run copy-service-assets && tsc",
     "build:client": "NODE_ENV=production webpack -p"
   },
