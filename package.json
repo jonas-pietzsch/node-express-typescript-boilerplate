@@ -8,7 +8,7 @@
     "npm": ">=6.4.1"
   },
   "scripts": {
-    "start": "nodemon --watch service -e ts,tsx --ignore 'src/frontend' --ignore '*Spec.ts*' --ignore '*Test.ts*' --exec 'yarn run server'",
+    "start": "nodemon --watch service -e ts,tsx --ignore 'src/frontend' --ignore '*Spec.ts*' --ignore '*Test.ts*' --exec 'npm run server'",
     "server": "ts-node service/server/index.ts",
     "prettier:check": "prettier --check service/**/*.{ts,tsx,js,jsx}",
     "prettier:write": "prettier --write service/**/*.{ts,tsx,js,jsx}",
