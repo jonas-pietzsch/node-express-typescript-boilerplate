@@ -95,9 +95,8 @@ export class ExpressServer {
 
     private applyWebpackDevMiddleware(server: Express) {
         if (Environment.isLocal()) {
-            const webpack = require('webpack')
             const config = require('../../webpack.config.js')
-            const compiler = webpack(config)
+            const compiler = require('webpack')(config)
 
             const webpackDevMiddleware = require('webpack-dev-middleware')
             server.use(webpackDevMiddleware(compiler, {
@@ -118,8 +117,7 @@ export class ExpressServer {
             this.cssFiles = []
         } else {
             const isomorphicAssets: any = JSON.parse(await fse.readFile('www/static/media/isomorphic-assets.json', 'utf-8'))
-            this.cssFiles = isomorphicAssets.chunks.app
-                .filter((path: string) => path.endsWith('.css'))
+            this.cssFiles = isomorphicAssets.chunks.app.filter((path: string) => path.endsWith('.css'))
         }
     }
 
