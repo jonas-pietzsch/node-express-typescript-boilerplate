@@ -12,6 +12,7 @@ import { CatEndpoints } from './cats/CatEndpoints'
 import { RequestServices } from './types/CustomRequest'
 import { addServicesToRequest } from './middlewares/ServiceDependenciesMiddleware'
 import { Environment } from './Environment'
+import { FrontendContext } from '../shared/FrontendContext'
 
 /**
  * Abstraction around the raw Express.js server and Nodes' HTTP server.
@@ -76,8 +77,14 @@ export class ExpressServer {
         this.prepareAssets()
         this.configureStaticAssets(server)
 
-        const renderPage = (template: string) => async (req: Request, res: Response, next: NextFunction) => {
-            res.type('text/html').render(template, { cssFiles: this.cssFiles })
+        const context: FrontendContext = {
+            cssFiles: this.cssFiles,
+            config: {
+                welcomePhrases: [ 'Bienvenue', 'Welcome', 'Willkommen', 'Welkom', 'Hoş geldin', 'Benvenuta', 'Bienvenido' ]
+            }
+        }
+        const renderPage = (template: string) => async (req: Request, res: Response, _: NextFunction) => {
+            res.type('text/html').render(template, context)
         }
 
         server.get('/', noCache, renderPage('index'))
