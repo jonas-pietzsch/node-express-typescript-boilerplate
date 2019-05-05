@@ -18,7 +18,8 @@
     "copy-service-assets": "cd service && find . -name '*.json' | cpio -pdm ../lib",
     "build": "npm run build:server && npm run build:client",
     "build:server": "npm run copy-service-assets && tsc",
-    "build:client": "NODE_ENV=production webpack -p"
+    "build:client": "NODE_ENV=production webpack -p",
+    "client:statistics": "NODE_ENV=production webpack --profile --json > service/www/webpack-stats.json && webpack-bundle-analyzer service/www/webpack-stats.json"
   },
   "dependencies": {
     "express": "^4.16.2",

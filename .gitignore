@@ -1,6 +1,7 @@
 node_modules
 lib
 service/www/static/
+service/www/webpack-stats.json
 coverage
 .nyc_output
 .vscode
