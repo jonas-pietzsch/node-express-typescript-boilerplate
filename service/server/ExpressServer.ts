@@ -50,6 +50,7 @@ export class ExpressServer {
     }
 
     public listen(server: Express, port: number) {
+        console.info(`Starting server on port ${port}`)
         return server.listen(port)
     }
 
@@ -62,13 +63,15 @@ export class ExpressServer {
         server.use(helmet())
         server.use(helmet.referrerPolicy({ policy: 'same-origin' }))
         server.use(helmet.noCache())
-        server.use(helmet.contentSecurityPolicy({
-            directives: {
-                defaultSrc: ["'self'"],
-                styleSrc: ["'unsafe-inline'"],
-                scriptSrc: ["'unsafe-inline'", "'self'"]
-            }
-        }))
+        server.use(
+            helmet.contentSecurityPolicy({
+                directives: {
+                    defaultSrc: ["'self'"],
+                    styleSrc: ["'unsafe-inline'"],
+                    scriptSrc: ["'unsafe-inline'", "'self'"]
+                }
+            })
+        )
     }
 
     private setupStandardMiddlewares(server: Express) {
@@ -89,16 +92,12 @@ export class ExpressServer {
     }
 
     private configureEjsTemplates(server: Express) {
-        server.set('views', [ 'resources/views' ])
+        server.set('views', ['resources/views'])
         server.set('view engine', 'ejs')
     }
 
     private setupTelemetry(server: Express) {
-        DatadogStatsdMiddleware.applyTo(server, {
-            targetHost: 'https://datadog.mycompany.com',
-            enableTelemetry: false,
-            tags: ['team:cats', 'product:cats-provider']
-        })
+        DatadogStatsdMiddleware.applyTo(server, Environment.getDatadogOptions())
     }
 
     private setupServiceDependencies(server: Express) {
@@ -113,7 +112,7 @@ export class ExpressServer {
         const context: FrontendContext = {
             cssFiles: this.cssFiles,
             config: {
-                welcomePhrases: [ 'Bienvenue', 'Welcome', 'Willkommen', 'Welkom', 'Hoş geldin', 'Benvenuta', 'Bienvenido' ]
+                welcomePhrases: ['Bienvenue', 'Welcome', 'Willkommen', 'Welkom', 'Hoş geldin', 'Benvenuta', 'Bienvenido']
             }
         }
         const renderPage = (template: string) => async (req: Request, res: Response, _: NextFunction) => {
@@ -139,13 +138,15 @@ export class ExpressServer {
             const compiler = require('webpack')(config)
 
             const webpackDevMiddleware = require('webpack-dev-middleware')
-            server.use(webpackDevMiddleware(compiler, {
-                hot: true,
-                publicPath: config.output.publicPath,
-                compress: true,
-                host: 'localhost',
-                port: Environment.getPort()
-            }))
+            server.use(
+                webpackDevMiddleware(compiler, {
+                    hot: true,
+                    publicPath: config.output.publicPath,
+                    compress: true,
+                    host: 'localhost',
+                    port: Environment.getPort()
+                })
+            )
 
             const webpackHotMiddleware = require('webpack-hot-middleware')
             server.use(webpackHotMiddleware(compiler))
