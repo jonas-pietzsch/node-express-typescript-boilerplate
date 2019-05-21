@@ -6,6 +6,7 @@ import * as compress from 'compression'
 import * as helmet from 'helmet'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
+import * as RateLimit from 'express-rate-limit'
 
 import { noCache } from './middlewares/NoCacheMiddleware'
 import DatadogStatsdMiddleware from './middlewares/DatadogStatsdMiddleware'
@@ -68,6 +69,13 @@ export class ExpressServer {
         server.use(bodyParser.json())
         server.use(cookieParser())
         server.use(compress())
+
+        const baseRateLimitingOptions = {
+            windowMs: 15 * 60 * 1000, // 15 min in ms
+            max: 1000,
+            message: 'Our API is rate limited to a maximum of 1000 requests per 15 minutes, please lower your request rate'
+        }
+        server.use('/api/', new RateLimit(baseRateLimitingOptions))
     }
 
     private configureEjsTemplates(server: Express) {
@@ -144,8 +152,14 @@ export class ExpressServer {
     }
 
     private configureApiEndpoints(server: Express) {
+        const strictRateLimit = new RateLimit({
+            windowMs: 15 * 60 * 1000, // 15 min in ms
+            max: 200,
+            message: 'This endpoint has a stricter rate limiting of a maximum of 200 requests per 15 minutes window, please lower your request rate'
+        })
+
         server.get('/api/cat', noCache, this.catEndpoints.getAllCats)
-        server.get('/api/statistics/cat', noCache, this.catEndpoints.getCatsStatistics)
+        server.get('/api/statistics/cat', noCache, strictRateLimit, this.catEndpoints.getCatsStatistics)
         server.get('/api/cat/:catId', noCache, this.catEndpoints.getCatDetails)
     }
 }
