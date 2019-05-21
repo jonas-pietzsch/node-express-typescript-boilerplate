@@ -3,6 +3,7 @@ import { Express, NextFunction, Response, Request } from 'express'
 import { Server } from 'http'
 import * as fse from 'fs-extra'
 import * as compress from 'compression'
+import * as helmet from 'helmet'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 
@@ -28,6 +29,7 @@ export class ExpressServer {
 
     public async setup(port: number) {
         const server = express()
+        this.setupSecurityMiddlewares(server)
         this.setupStandardMiddlewares(server)
         this.applyWebpackDevMiddleware(server)
         this.setupTelemetry(server)
@@ -47,6 +49,19 @@ export class ExpressServer {
 
     public kill() {
         if (this.httpServer) this.httpServer.close()
+    }
+
+    private setupSecurityMiddlewares(server: Express) {
+        server.use(helmet())
+        server.use(helmet.referrerPolicy({ policy: 'same-origin' }))
+        server.use(helmet.noCache())
+        server.use(helmet.contentSecurityPolicy({
+            directives: {
+                defaultSrc: ["'self'"],
+                styleSrc: ["'unsafe-inline'"],
+                scriptSrc: ["'unsafe-inline'", "'self'"]
+            }
+        }))
     }
 
     private setupStandardMiddlewares(server: Express) {
