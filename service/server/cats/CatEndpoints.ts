@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import * as HttpStatus from 'http-status-codes'
+import { FeatureToggles } from '../middlewares/feature-toggles/features'
 
 export class CatEndpoints {
     public getCatDetails = async (req: Request, res: Response, next: NextFunction) => {
@@ -29,7 +30,11 @@ export class CatEndpoints {
 
     public getCatsStatistics = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.json(req.services.catService.getCatsStatistics())
+            if (req.fflip.has(FeatureToggles.WITH_CAT_STATISTICS)) {
+                res.json(req.services.catService.getCatsStatistics())
+            } else {
+                res.sendStatus(HttpStatus.NOT_FOUND)
+            }
         } catch (err) {
             next(err)
         }

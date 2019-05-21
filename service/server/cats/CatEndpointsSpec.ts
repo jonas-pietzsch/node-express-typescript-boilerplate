@@ -20,7 +20,10 @@ describe('CatEndpoints', () => {
         }
         sampleRequest = {
             services: { catService },
-            params: { catId: 1 }
+            params: { catId: 1 },
+            fflip: {
+                has: sandbox.stub().returns(true)
+            }
         }
     })
 
@@ -79,6 +82,14 @@ describe('CatEndpoints', () => {
             return ExpressMocks.create(sampleRequest)
                 .test(endpoints.getCatsStatistics)
                 .expectJson({ amount: 30, averageAge: 50 })
+        })
+
+        it('should send status 404 if the feature toggle is deactivated', () => {
+            sampleRequest.fflip.has.returns(false)
+
+            return ExpressMocks.create(sampleRequest)
+                .test(endpoints.getCatsStatistics)
+                .expectSendStatus(HttpStatus.NOT_FOUND)
         })
 
         it('should handle thrown errors by passing them to NextFunction', () => {
