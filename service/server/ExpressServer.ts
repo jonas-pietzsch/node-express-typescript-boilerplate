@@ -4,6 +4,8 @@ import { Server } from 'http'
 import * as fse from 'fs-extra'
 import * as compress from 'compression'
 import * as helmet from 'helmet'
+import * as hpp from 'hpp'
+import * as cors from 'cors'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as RateLimit from 'express-rate-limit'
@@ -30,14 +32,15 @@ export class ExpressServer {
 
     public async setup(port: number) {
         const server = express()
-        this.setupSecurityMiddlewares(server)
         this.setupStandardMiddlewares(server)
+        this.setupSecurityMiddlewares(server)
         this.applyWebpackDevMiddleware(server)
         this.setupTelemetry(server)
         this.setupServiceDependencies(server)
         this.configureEjsTemplates(server)
         this.configureFrontendPages(server)
         this.configureApiEndpoints(server)
+        this.configureFrontendEndpoints(server)
 
         this.httpServer = this.listen(server, port)
         this.server = server
@@ -53,6 +56,7 @@ export class ExpressServer {
     }
 
     private setupSecurityMiddlewares(server: Express) {
+        server.use(hpp())
         server.use(helmet())
         server.use(helmet.referrerPolicy({ policy: 'same-origin' }))
         server.use(helmet.noCache())
@@ -161,5 +165,11 @@ export class ExpressServer {
         server.get('/api/cat', noCache, this.catEndpoints.getAllCats)
         server.get('/api/statistics/cat', noCache, strictRateLimit, this.catEndpoints.getCatsStatistics)
         server.get('/api/cat/:catId', noCache, this.catEndpoints.getCatDetails)
+    }
+
+    private configureFrontendEndpoints(server: Express) {
+        const forbidExternalFrontends = cors({ origin: false })
+
+        server.get('/internal/cat', forbidExternalFrontends, noCache, this.catEndpoints.getAllCats)
     }
 }
