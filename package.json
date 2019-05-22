@@ -1,7 +1,7 @@
 {
   "name": "node-express-typescript-boilerplate",
   "version": "0.0.1",
-  "description": "A cookbook full of recipes for developing web apps with Node.js and Express.js in TypeScript",
+  "description": "Boilerplate for developing web apps with Node.js, Express.js, Webpack and TypeScript",
   "main": "service/server/index.ts",
   "engines": {
     "node": ">=8.15.0",
