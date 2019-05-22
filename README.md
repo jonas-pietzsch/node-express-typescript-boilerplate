@@ -1,10 +1,10 @@
-## node-express-typescript-boilerplate
+# Node.js, Express.js & TypeScript Boilerplate for Web Apps
 
 This is a boilerplate project for web applications including both backend and frontend using Node.js, Express.js and TypeScript.
 
 It is built up stepwise. The steps are reflected in individual branches. Each branch introduces a new topic and implements few examples.
 
-### Steps aka branches
+## Steps aka branches
 
 * [01 – Initial Setup](https://github.com/jverhoelen/node-express-typescript-boilerplate/tree/01-setup)
 * [02 – Express.js Middlewares and Request Handlers](https://github.com/jverhoelen/node-express-typescript-boilerplate/tree/02-express-middlewares-and-request-handlers)
@@ -17,7 +17,7 @@ It is built up stepwise. The steps are reflected in individual branches. Each br
 
 There are [open Pull Requests showing the diff for each step](https://github.com/jverhoelen/node-express-typescript-boilerplate/pulls) compared to its previous step. The `master` branch is default and points to the branch of the last recent step.
 
-### What to do with a step aka branch?
+## What to do with a step aka branch?
 
 You should read the article series I wrote about building up this project :blue_book: Each article is available in :gb: and :de:
 
