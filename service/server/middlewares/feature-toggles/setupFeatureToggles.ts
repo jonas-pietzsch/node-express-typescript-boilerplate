@@ -4,14 +4,12 @@ import * as FFlipExpressIntegration from 'fflip-express'
 import { criteria } from './criteria'
 import { features } from './features'
 
-const createFFlipExpressIntegration = () => new FFlipExpressIntegration(fflip, {
-    cookieName: 'fflip',
-    manualRoutePath: '/api/toggles/local/:name/:action'
-})
-
 export const applyFeatureToggles = (server: Express) => {
     fflip.config({ criteria, features })
-    const fflipExpressIntegration = createFFlipExpressIntegration()
+    const fflipExpressIntegration = new FFlipExpressIntegration(fflip, {
+        cookieName: 'fflip',
+        manualRoutePath: '/api/toggles/local/:name/:action'
+    })
 
     server.use(fflipExpressIntegration.middleware)
     server.use((req: Request, _: Response, next: NextFunction) => {
