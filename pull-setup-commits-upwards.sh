@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 git checkout 02-express-middlewares-and-request-handlers
 git pull --rebase origin 01-setup
 git push
