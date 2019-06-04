@@ -22,7 +22,7 @@ There are [open Pull Requests showing the diff for each step](https://github.com
 You should read the article series I wrote about building up this project :blue_book: Each article is available in :gb: and :de:
 
 1. Part 1 (Steps 1-5) – [English :gb:](https://blog.codecentric.de/en/2019/05/web-app-node-js-express-js-typescript/) – [German :de:](https://blog.codecentric.de/2019/05/web-anwendungen-mit-node-express-typescript-entwickeln/)
-2. Part 2 (Steps 6-8) – *In progress*
+2. Part 2 (Steps 6-8) – [English :gb:](https://blog.codecentric.de/en/2019/05/webapps-node-express-typescript-part2/) – [German :de:](https://blog.codecentric.de/2019/05/webanwendungen-node-express-typescript-teil2/)
 3. Part 3 (Steps 9-X) – *Soon in progress*
 
 In addition, have a look at the [docs folder](./docs/) on the branches. The files contain information on added NPM scripts and how the changes can be tried out.
