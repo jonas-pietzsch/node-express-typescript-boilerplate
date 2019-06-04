@@ -1,4 +1,5 @@
 import { ExpressServer } from './ExpressServer'
+import { CatEndpoints } from './cats/CatEndpoints'
 
 /**
  * Wrapper around the Node process, ExpressServer abstraction and complex dependencies such as services that ExpressServer needs.
@@ -6,7 +7,7 @@ import { ExpressServer } from './ExpressServer'
  */
 export class Application {
     public static async createApplication() {
-        const expressServer = new ExpressServer()
+        const expressServer = new ExpressServer(new CatEndpoints())
         await expressServer.setup(8000)
         Application.handleExit(expressServer)
 
