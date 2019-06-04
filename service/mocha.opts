@@ -1,0 +1,7 @@
+--require ts-node/register
+--reporter mocha-better-spec-reporter
+--recursive
+--require service/setupTestEnvironment.ts
+--inspect
+--debug-brk
+--timeout 5000
