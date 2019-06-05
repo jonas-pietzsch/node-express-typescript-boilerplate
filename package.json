@@ -29,6 +29,8 @@
     "csurf": "^1.10.0",
     "express": "^4.16.2",
     "express-rate-limit": "^3.5.1",
+    "fflip": "^4.0.0",
+    "fflip-express": "^1.0.2",
     "fs-extra": "^7.0.1",
     "helmet": "^3.18.0",
     "hot-shots": "^4.7.0",

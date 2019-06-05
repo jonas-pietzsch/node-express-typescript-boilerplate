@@ -17,6 +17,7 @@ import { RequestServices } from './types/CustomRequest'
 import { addServicesToRequest } from './middlewares/ServiceDependenciesMiddleware'
 import { Environment } from './Environment'
 import { FrontendContext } from '../shared/FrontendContext'
+import { applyFeatureToggles } from './middlewares/feature-toggles/setupFeatureToggles'
 
 /**
  * Abstraction around the raw Express.js server and Nodes' HTTP server.
@@ -34,6 +35,7 @@ export class ExpressServer {
         const server = express()
         this.setupStandardMiddlewares(server)
         this.setupSecurityMiddlewares(server)
+        this.setupFeatureToggles(server)
         this.applyWebpackDevMiddleware(server)
         this.setupTelemetry(server)
         this.setupServiceDependencies(server)
@@ -80,6 +82,10 @@ export class ExpressServer {
             message: 'Our API is rate limited to a maximum of 1000 requests per 15 minutes, please lower your request rate'
         }
         server.use('/api/', new RateLimit(baseRateLimitingOptions))
+    }
+
+    private setupFeatureToggles(server: Express) {
+        applyFeatureToggles(server)
     }
 
     private configureEjsTemplates(server: Express) {
