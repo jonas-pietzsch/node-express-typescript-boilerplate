@@ -2,6 +2,7 @@ import { ExpressServer } from './ExpressServer'
 import { CatEndpoints } from './cats/CatEndpoints'
 import { CatService } from './cats/CatService'
 import { CatRepository } from './cats/CatRepository'
+import { Environment } from './Environment'
 
 /**
  * Wrapper around the Node process, ExpressServer abstraction and complex dependencies such as services that ExpressServer needs.
@@ -13,7 +14,7 @@ export class Application {
         const requestServices = { catService }
         const expressServer = new ExpressServer(new CatEndpoints(), requestServices)
 
-        await expressServer.setup(8000)
+        await expressServer.setup(Environment.getPort())
         Application.handleExit(expressServer)
 
         return expressServer
