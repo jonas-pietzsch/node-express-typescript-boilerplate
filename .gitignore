@@ -7,3 +7,4 @@ coverage
 .vscode
 .isomorphic-loader-config.json
 .idea
+*.iml
